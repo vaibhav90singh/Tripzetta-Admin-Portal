@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DASHBOARD TRIPZETTA</title>
+   <link rel="icon" type="image/png" href="LOGO.png" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+<body class="bg-gray-100">
+  <div class="flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 shadow-md p-5 flex flex-col justify-between md:h-screen text-white"
+       style="background-image: url('sidebar.avif'); background-size: cover; background-position: center;">
+
+        <div>
+      <h1 class="text-4xl font-bold mb-4">Tripzetta.com</h1>
+<img src="LOGO.png" alt="Logo" class="w-80 h-80 object-contain" />
+      <button onclick="openCreateInvoice()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">CREATE (➕)</button>
+ 
+ </div>     <!-- Logout button at bottom -->
+  <div class="flex justify-center">
+    <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded mb-4 hover:bg-red-700">
+      Logout
+    </button>
+  </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-6 w-full">
+      <h1 class="text-2xl font-bold mb-6">INVOICE LIST</h1>
+      <div class="flex items-center space-x-4 mb-4">
+  <input type="date" id="filterDate" class="border border-gray-300 rounded px-3 py-2" />
+  <button onclick="applyDateFilter()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Apply Filter</button>
+  <button onclick="clearDateFilter()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Clear Filter</button>
+</div>
+<div class="overflow-x-auto">
+      <table class="min-w-full bg-white shadow-md rounded overflow-hidden">
+        <thead class="bg-gray-200 text-gray-600">
+          <tr>
+            <th class="py-3 px-6">Invoice No.</th>
+            <th class="py-3 px-6">Date</th>
+            <th class="py-3 px-6">Customer Name</th>
+            <th class="py-3 px-6">Total (INR)</th>
+            <th class="py-3 px-6">Status</th>
+            <th class="py-3 px-6">Action</th>
+          </tr>
+        </thead>
+        <tbody id="invoiceTable" class="text-center">
+          <!-- Dynamic rows -->
+        </tbody>
+      </table>
+    </div>
+    </main>
+  </div>
+
+  <!-- WhatsApp Popup -->
+  <div id="whatsappPopup" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-96">
+      <h2 class="text-lg font-bold mb-2">Send via WhatsApp</h2>
+      <input type="text" id="whatsappNumber" placeholder="Enter WhatsApp number (with country code)" class="w-full border px-3 py-2 rounded mb-4">
+      <div class="flex justify-end space-x-2">
+        <button onclick="closeWhatsappPopup()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+        <button onclick="sendWhatsappMessage()" class="bg-green-600 text-white px-4 py-2 rounded">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gmail Popup -->
+  <div id="gmailPopup" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-96">
+      <h2 class="text-lg font-bold mb-2">Send via Gmail</h2>
+      <input type="email" id="gmailEmail" placeholder="Enter recipient email" class="w-full border px-3 py-2 rounded mb-4">
+      <div class="flex justify-end space-x-2">
+        <button onclick="closeGmailPopup()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+        <button onclick="sendGmail()" class="bg-red-600 text-white px-4 py-2 rounded">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentInvoiceId = '';
+
+    function openCreateInvoice() {
+      window.location.href = "create-invoice.html";
+    }
+
+    function openWhatsappPopup(invoiceId) {
+      currentInvoiceId = invoiceId;
+      document.getElementById('whatsappPopup').classList.remove('hidden');
+    }
+
+    function closeWhatsappPopup() {
+      document.getElementById('whatsappPopup').classList.add('hidden');
+      currentInvoiceId = '';
+    }
+
+    function sendWhatsappMessage() {
+      const number = document.getElementById('whatsappNumber').value.trim();
+      if (!number) {
+        alert("Please enter a WhatsApp number.");
+        return;
+      }
+
+      const message = `Hi, here is your invoice ${currentInvoiceId}. Please check it.`;
+      const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+      closeWhatsappPopup();
+    }
+
+    function openGmailPopup(invoiceId) {
+      currentInvoiceId = invoiceId;
+      document.getElementById('gmailPopup').classList.remove('hidden');
+    }
+
+    function closeGmailPopup() {
+      document.getElementById('gmailPopup').classList.add('hidden');
+      currentInvoiceId = '';
+    }
+
+    function sendGmail() {
+      const email = document.getElementById('gmailEmail').value.trim();
+      if (!email) {
+        alert("Please enter an email address.");
+        return;
+      }
+
+      const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+      const invoice = invoices.find(i => i.invoiceNo === currentInvoiceId);
+      if (!invoice) {
+        alert("Invoice not found.");
+        return;
+      }
+
+      const subject = `Invoice ${invoice.invoiceNo} from Your Company`;
+      const body = `Hi ${invoice.customer},%0D%0A%0D%0APlease find your invoice details below:%0D%0AInvoice No: ${invoice.invoiceNo}%0D%0ADate: ${invoice.date}%0D%0ATotal: ${invoice.value}%0D%0AStatus: ${invoice.status}%0D%0A%0D%0AThank you for your business.%0D%0A- Your Company`;
+
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      window.open(mailtoLink, '_blank');
+      closeGmailPopup();
+    }
+
+//143-284
+async function downloadPDF(invoiceId) {
+  const { jsPDF } = window.jspdf;
+  const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+  const invoice = invoices.find(i => i.invoiceNo === invoiceId);
+  if (!invoice) {
+    alert("Invoice not found.");
+    return;
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.style.width = '210mm';
+  tempDiv.style.minHeight = '297mm';
+  tempDiv.style.backgroundColor = '#fff';
+  tempDiv.style.padding = '40px';
+  tempDiv.style.fontFamily = 'Arial, sans-serif';
+  tempDiv.style.fontSize = '12px';
+  tempDiv.style.color = '#000';
+  tempDiv.innerHTML = `
+    <h2 style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 10px;">TAX INVOICE</h2>
+
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <td><strong>Invoice Date:</strong> ${invoice.date}</td>
+        <td><strong>Invoice No.:</strong> ${invoice.invoiceNo}</td>
+        <td><strong>GSTIN:</strong> 07APDPA8620A1ZL</td>
+        <td><strong>PAN:</strong> APDPA8620A</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Place of Supply:</strong> ${invoice.place}</td>
+        <td colspan="2">
+          <strong>Regd. Address:</strong><br>
+          408 4th Floor Devika Tower<br>
+          Nehru Place New Delhi<br>
+          Contact: +919650485130
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <strong>Name:</strong> ${invoice.customer}<br>
+          <strong>Address:</strong> ${invoice.address}
+        </td>
+        <td colspan="2">
+          <strong>GSTIN:</strong> ${invoice.customerGSTIN}<br>
+          <strong>STATE:</strong> ${invoice.state}
+        </td>
+      </tr>
+    </table>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Service Description</th>
+          <th>SAC Code</th>
+          <th>TAX Type</th>
+          <th>Taxable Value</th>
+          <th>SGST %</th>
+          <th>SGST Amount</th>
+          <th>CGST %</th>
+          <th>CGST Amount</th>
+          <th>IGST %</th>
+          <th>IGST Amount</th>
+          <th>Total In INR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>
+            Amount collected on behalf of AIRLINE<br>
+            DELHI-LONDON<br>
+            DUBLIN-DELHI<br>
+            For ${invoice.passenger1 || 'Mr Ashmeet'}<br>
+            For ${invoice.passenger2 || 'Mrs Priyanka'}
+          </td>
+          <td>${invoice.sacCode || ''}</td>
+          <td>T</td>
+          <td>${invoice.taxableValue || '0.00'}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>${invoice.value || '0.00'}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="text-align: right; font-weight: bold; margin-top: 5px;">
+      T: Taxable &nbsp;&nbsp;&nbsp; P: Pure Agent &nbsp;&nbsp;&nbsp; E: Exemption &nbsp;&nbsp;&nbsp; R: Reverse Charge
+    </p>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+      <tr>
+        <td style="padding: 5px;">
+          <strong>Bank Details:</strong><br>
+          Beneficiary Name: TRIPZETTA<br>
+          Bank Name: YES BANK<br>
+          Branch: EAST OF KAILASH , New Delhi-110065<br>
+          IFSC CODE: YESB0000514<br>
+          Current Account No: 051463700000043
+        </td>
+        <td style="padding: 5px;">
+          <strong>Total Amount Before Tax:</strong> ${invoice.taxableValue || '0.00'}<br>
+          Add: SGST @ 9%: ${invoice.sgstAmt || '0.00'}<br>
+          Add: CGST @ 9%: ${invoice.cgstAmt || '0.00'}<br>
+          Add: IGST @ 18%: ${invoice.igstAmt || '0.00'}<br>
+          Rounding: 0.00<br><br>
+          <strong>Total Invoice Value:</strong> ${invoice.value || '0.00'}
+        </td>
+      </tr>
+    </table>
+
+    <p><strong>Total Invoice Value (In Words):</strong> ${invoice.amountWords || 'Zero Rupees Only'}</p>
+
+    <p><strong>Terms & Conditions:</strong></p>
+    <ul style="padding-left: 20px;">
+      <li>CHEQUE/NEFT/RTGS should be in favour of TRIPZETTA</li>
+      <li>Any refunds or claims are subject to the cancellation policy of the booking as per rules.</li>
+      <li>All disputes are subject to jurisdiction of Delhi courts.</li>
+      <li>Interest @ 18% p.a. will be charged on overdue bills.</li>
+    </ul>
+
+    <table style="width: 100%; margin-top: 10px;">
+      <tr>
+        <td style="border: none;"></td>
+        <td style="text-align: right; font-weight: bold;">
+          For TRIPZETTA<br><br><br>Authorised Signatory
+        </td>
+      </tr>
+    </table>
+  `;
+
+  document.body.appendChild(tempDiv);
+
+  try {
+    const canvas = await html2canvas(tempDiv, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Invoice_${invoiceId}.pdf`);
+  } catch (err) {
+    alert("Error generating PDF: " + err);
+  } finally {
+    document.body.removeChild(tempDiv);
+  }
+}
+
+//////////////////
+
+    function editInvoice(invoiceNo) {
+      window.location.href = `edit-invoice.html?invoiceNo=${invoiceNo}`;
+    }
+
+    // Load invoices
+   window.onload = function () {
+  loadInvoiceTable();
+};
+
+function loadInvoiceTable(filteredInvoices = null) {
+  const invoiceTable = document.getElementById('invoiceTable');
+  invoiceTable.innerHTML = ''; // clear previous
+
+  const invoices = filteredInvoices || JSON.parse(localStorage.getItem('invoices') || '[]');
+
+  invoices.forEach(inv => {
+    const row = document.createElement('tr');
+    row.className = 'border-b';
+    row.innerHTML = `
+      <td class="py-3 px-6">${inv.invoiceNo}</td>
+      <td class="py-3 px-6">${inv.date}</td>
+      <td class="py-3 px-6">${inv.customer}</td>
+      <td class="py-3 px-6">${inv.value}</td>
+      <td class="py-3 px-6 ${inv.status === 'Paid' ? 'text-green-600' : 'text-red-600'}">${inv.status}</td>
+      <td class="py-3 px-6 flex justify-center space-x-2 items-center">
+        <button onclick="viewPDF('${inv.invoiceNo}')" class="bg-purple-600 text-white px-3 py-1 rounded">👁️</button>
+        <button onclick="editInvoice('${inv.invoiceNo}')" class="bg-yellow-500 text-white px-3 py-1 rounded">✏️</button>
+        <button onclick="downloadPDF('${inv.invoiceNo}')" class="bg-blue-500 text-white px-3 py-1 rounded">⬇️</button>
+        <button onclick="openWhatsappPopup('${inv.invoiceNo}')" class="bg-green-500 text-white px-3 py-1 rounded">📲</button>
+        <button onclick="openGmailPopup('${inv.invoiceNo}')" class="bg-red-500 text-white px-3 py-1 rounded">📧</button>
+        <button onclick="deleteInvoice('${inv.invoiceNo}')" class="bg-gray-600 text-white px-3 py-1 rounded">🗑️</button>
+      </td>`;
+    invoiceTable.appendChild(row);
+  });
+}
+
+
+    // Check if user is logged in, if not redirect to login.html
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+
+function deleteInvoice(invoiceNo) {
+  if (!confirm("Are you sure you want to delete this invoice?")) return;
+
+  let invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+  invoices = invoices.filter(inv => inv.invoiceNo !== invoiceNo);
+  localStorage.setItem('invoices', JSON.stringify(invoices));
+  location.reload(); // Reload page to update the invoice list
+}
+
+async function viewPDF(invoiceId) {
+  const { jsPDF } = window.jspdf;
+  const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+  const invoice = invoices.find(i => i.invoiceNo === invoiceId);
+  if (!invoice) {
+    alert("Invoice not found.");
+    return;
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.style.width = '800px';
+  tempDiv.style.padding = '20px';
+  tempDiv.style.backgroundColor = 'white';
+  tempDiv.innerHTML = `
+    <div style="font-family: Arial, sans-serif; font-size: 12px; color: #000;">
+      <h2 style="text-align:center; font-weight: bold; font-size: 18px;">TAX INVOICE</h2>
+      <p><strong>Invoice Date:</strong> ${invoice.date}</p>
+      <p><strong>Invoice No:</strong> ${invoice.invoiceNo}</p>
+      <p><strong>Place of Supply:</strong> ${invoice.place || 'N/A'}</p>
+      <p><strong>Name:</strong> ${invoice.customer || 'N/A'}</p>
+      <p><strong>Address:</strong> ${invoice.address || 'N/A'}</p>
+      <p><strong>GSTIN:</strong> ${invoice.customerGSTIN || 'N/A'}</p>
+      <p><strong>STATE:</strong> ${invoice.state || 'N/A'}</p>
+      <p><strong>Company GSTIN:</strong> 07APDPA8620A1ZL</p>
+      <p><strong>PAN:</strong> APDPA8620A</p>
+      <p><strong>Regd. Address:</strong> 408 4th Floor Devika Tower Nehru Place New Delhi</p>
+      <p><strong>Contact:</strong> +919650485130</p>
+      <!-- You can continue including the full invoice table and totals like in downloadPDF -->
+    </div>`;
+
+  document.body.appendChild(tempDiv);
+
+  try {
+    const canvas = await html2canvas(tempDiv);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+
+    // Set the PDF URL to iframe inside modal
+    document.getElementById('pdfViewer').src = url;
+    document.getElementById('viewModal').classList.remove('hidden');
+
+  } catch (err) {
+    alert("Error generating view: " + err);
+  } finally {
+    document.body.removeChild(tempDiv);
+  }
+}
+function closeViewModal() {
+  document.getElementById('viewModal').classList.add('hidden');
+  document.getElementById('pdfViewer').src = '';
+}
+function applyDateFilter() {
+  const selectedDate = document.getElementById("filterDate").value;
+  if (!selectedDate) return;
+
+  const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+  const filtered = invoices.filter(inv => inv.date === selectedDate);
+
+  loadInvoiceTable(filtered);
+}
+
+function clearDateFilter() {
+  document.getElementById("filterDate").value = '';
+  loadInvoiceTable();
+}
+
+
+  </script>
+  <!-- Invoice View Modal -->
+<div id="viewModal" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white w-[90%] max-w-3xl p-4 rounded shadow-lg relative">
+    <button onclick="closeViewModal()" class="absolute top-2 right-2 text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700">Close</button>
+    <iframe id="pdfViewer" class="w-full h-[80vh] border mt-8 rounded" frameborder="0"></iframe>
+  </div>
+</div>
+
+</body>
+</html>
