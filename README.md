@@ -1,4 +1,3 @@
-# tripzetta-admin-portal-testing
 # 🧾 Tripzetta Invoice Management System
 
 An elegant, responsive, and powerful **Invoice Management Dashboard** built using **HTML, Tailwind CSS, JavaScript, PHP & MySQL**. This system allows users to manage, view, create, download, and share tax invoices seamlessly with WhatsApp & Gmail integration — perfect for travel and service-based businesses.
@@ -59,7 +58,7 @@ Edit
 
 1. 📦 Clone this repository:
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/vaibhav90singh/tripzetta_admin_portal.git
 🛠️ Set up the MySQL Database:
 
 Import invoice_db.sql into your PHPMyAdmin.
@@ -90,8 +89,19 @@ Agencies sending invoices via WhatsApp or Email
 For any queries or collaborations:
 
 Vaibhav
-📧 tripzetta@gmail.com
-📱 +91 9650485130
+📧 itsvaibhavsingh0001@gmail.com
+📱 +91 99999 99999
 
 📄 License
-This project is open-source under the MIT License. Use it freely for personal or commercial projects.
+© 2025 Vaibhav | Tripzetta.com
+
+All Rights Reserved.
+
+This software and its source code are proprietary and confidential. You may not copy, reproduce, modify, distribute, display, or use any part of this software for any commercial or non-commercial purpose without express written permission from the author.
+
+Unauthorized use, replication, or distribution of this software is strictly prohibited and may result in legal action.
+
+This project is intended solely for demonstration and personal learning purposes.
+
+For commercial licensing or inquiries, contact: tripzetta@gmail.com
+
