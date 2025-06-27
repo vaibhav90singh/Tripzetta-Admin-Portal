@@ -2,7 +2,8 @@
 
 An elegant, responsive, and powerful **Invoice Management Dashboard** built using **HTML, Tailwind CSS, JavaScript, PHP & MySQL**. This system allows users to manage, view, create, download, and share tax invoices seamlessly with WhatsApp & Gmail integration — perfect for travel and service-based businesses.
 
-![Tripzetta Dashboard Screenshot](preview.png)
+![Tripzetta Dashboard Screenshot]
+<img width="947" alt="image" src="https://github.com/user-attachments/assets/626417e6-6a22-4821-894c-2a178e720feb" />
 
 ---
 
