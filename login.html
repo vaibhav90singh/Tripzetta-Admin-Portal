@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login - Tripzetta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-300">
+
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transition-all duration-300">
+    <div class="text-center mb-6">
+      <h2 class="text-3xl font-extrabold text-blue-700">Tripzetta Admin</h2>
+      <p class="text-gray-500 text-sm mt-1">Secure login to dashboard</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="relative">
+        <input type="email" id="email" placeholder="Email" class="w-full border border-gray-300 px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition">
+        <i class="fas fa-envelope absolute right-4 top-3 text-gray-400"></i>
+      </div>
+
+      <div class="relative">
+        <input type="password" id="password" placeholder="Password" class="w-full border border-gray-300 px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition">
+        <i class="fas fa-lock absolute right-4 top-3 text-gray-400"></i>
+      </div>
+
+      <button onclick="login()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md">
+        Login
+      </button>
+    </div>
+<p class="text-right text-sm text-blue-600 hover:underline mt-2">
+  <a href="forgot_password.html">Forgot password?</a>
+</p>
+
+    <p id="errorMsg" class="text-red-500 mt-4 text-center hidden">Invalid credentials</p>
+  </div>
+
+  <script>
+  function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    fetch('login.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem("isLoggedIn", "true");
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("errorMsg").classList.remove("hidden");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+</script>
+
+</body>
+</html>
+
