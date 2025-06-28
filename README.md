@@ -43,7 +43,7 @@ An elegant, responsive, and powerful **Invoice Management Dashboard** built usin
 
       ├── create-invoice.html # Form to create new invoices
 
-├     ├── edit-invoice.html # Edit existing invoices
+      ├── edit-invoice.html # Edit existing invoices
 
       ├── fetch_invoices.php # PHP to fetch invoices from DB
 
