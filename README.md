@@ -36,7 +36,7 @@ An elegant, responsive, and powerful **Invoice Management Dashboard** built usin
 
 ## 📂 Folder Structure
 
-/project-root
+      /project-root
       │
 
       ├── index.html # Main Dashboard Page
