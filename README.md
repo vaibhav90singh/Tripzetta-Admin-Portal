@@ -37,27 +37,23 @@ An elegant, responsive, and powerful **Invoice Management Dashboard** built usin
 ## 📂 Folder Structure
 
 /project-root
-│
+      │
 
-├── index.html # Main Dashboard Page
+      ├── index.html # Main Dashboard Page
 
-├── create-invoice.html # Form to create new invoices
+      ├── create-invoice.html # Form to create new invoices
 
-├── edit-invoice.html # Edit existing invoices
+├     ├── edit-invoice.html # Edit existing invoices
 
-├── fetch_invoices.php # PHP to fetch invoices from DB
+      ├── fetch_invoices.php # PHP to fetch invoices from DB
 
-├── delete_invoice.php # PHP to delete an invoice
+      ├── delete_invoice.php # PHP to delete an invoice
 
-├── LOGO.png / Trip.png # Branding images
+      ├── LOGO.png / Trip.png # Branding images
 
-├── style.css (if any)
+      ├── style.css (if any)
 
-└── ... (other assets/scripts)
-
-yaml
-Copy
-Edit
+      └── ... (other assets/scripts)
 
 ---
 
