@@ -66,17 +66,17 @@ An elegant, responsive, and powerful **Invoice Management Dashboard** built usin
    git clone https://github.com/vaibhav90singh/tripzetta_admin_portal.git
 🛠️ Set up the MySQL Database:
 
-Import invoice_db.sql into your PHPMyAdmin.
+      Import invoice_db.sql into your PHPMyAdmin.
 
 Make sure table name is invoices.
 
 🔧 Place the folder in your local server root:
 
-Example: C:/xampp/htdocs/tripzetta-dashboard
+      Example: C:/xampp/htdocs/tripzetta-dashboard
 
 🌐 Start Apache & MySQL in XAMPP.
 
-Access: http://localhost/tripzetta-dashboard/index.html
+      Access: http://localhost/tripzetta-dashboard/index.html
 
 📸 Screenshots
 Dashboard View	Invoice PDF Preview
