@@ -1,10 +1,10 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "invoice_db";
+// $host = "localhost";
+// $username = "root";
+// $password = "";
+// $database = "invoice_db";
 
-$conn = new mysqli($host, $username, $password, $database);
+$conn = new mysqli("localhost", "root", "", "invoice_db");
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }

@@ -126,6 +126,30 @@
     // Optional: Add your form submission logic here
     // You can use fetch() to send a POST to update_invoice.php
   </script>
+  <script>form.addEventListener('submit', function (e) {
+  e.preventDefault(); // Prevent page reload
+
+  const formData = new FormData(form);
+
+  fetch('update_invoice.php', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Invoice updated successfully!');
+        window.location.href = 'index.html'; // Optional redirect
+      } else {
+        alert('Update failed: ' + (data.error || 'Unknown error'));
+      }
+    })
+    .catch(err => {
+      console.error('Update error:', err);
+      alert('Something went wrong while updating.');
+    });
+});
+</script>
 </body>
 </html>
 

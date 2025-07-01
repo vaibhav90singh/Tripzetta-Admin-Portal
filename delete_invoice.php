@@ -1,7 +1,7 @@
 <?php
 $invoiceNo = $_POST['invoiceNo'];
 
-$conn = new mysqli("localhost", "root", "", "invoice_db");
+$conn = new mysqli("localhost", "root", "nehruplace@", "invoice_db");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

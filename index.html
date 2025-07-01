@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DASHBOARD TRIPZETTA</title>
+  <title>Tripzetta Dashboard</title>
    <link rel="icon" type="image/png" href="LOGO.png" />
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
@@ -75,9 +75,12 @@
   width: 210mm;
   min-height: 297mm;
   margin: 10px auto;
-  background: #fff;
+  background-image:url('BackgroundInvoice.png');
+  background-size: 210mm 297mm;       /* Scales image to cover the entire page */
+  background-repeat: no-repeat; /* Prevents tiling */
+  background-position: center;  /* Centers the image */
+  background-attachment: fixed;
   padding: 15mm;
-  border: 1px solid #000;
 }
 
 .pdftesting .header {
@@ -89,6 +92,7 @@
 .pdftesting .header-left {
   flex: 1;
   max-width: 60%;
+  margin-top: -0.23cm;
 }
 
 .pdftesting .header-right {
@@ -262,7 +266,26 @@
         return;
       }
 
-      const message = `Hi, here is your invoice ${currentInvoiceId}. Please check it.`;
+      const message = `Invoice No. ${currentInvoiceId}.
+
+Dear Client,
+
+Hope you're doing well.
+
+Here your Tripzetta Travel Invoice details has been successfully sent to your Gmail address.
+
+  Please check it...
+
+  PDF invoice attached for your records.
+
+  Thank you for choosing Tripzetta !!!
+  
+Feel free to reach out for any queries...
+
+Warm regards,
+Vaibhav Singh
+Billing Executive, Tripzetta
+ +91 9650485130`;
 
       
       const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
@@ -322,10 +345,11 @@ async function downloadPDF(invoiceId) {
   tempDiv.style.color = '#000';
   tempDiv.innerHTML = `
 
+
 <div class="pdftesting">
     <div class="invoice-page" id="invoiceContent">
     <div class="header">
-      <div class="header-left"><br>
+      <div class="header-left"><br><br><br>
         <p class="title">INVOICE</p>
         <div class="section"><br>
           <p><span class="bold">Invoice Date:</span> ${invoice.date}</p>
@@ -341,7 +365,7 @@ async function downloadPDF(invoiceId) {
       </div>
       <div class="header-right">
         <img src="image.png" class="logo" alt="Tripzetta Logo" onerror="this.src='fallback-logo.png'">
-        <div><br>
+        <div><br><br><br>
           <p><strong>GSTIN:</strong> 07APDPA8620A1ZL</p>
           <p><strong>PAN:</strong> APDPA8620A</p><br>
           <p><strong>Regd. Address:</strong> 408 4th Floor Devika Tower, Nehru Place, New Delhi</p>
@@ -400,7 +424,7 @@ async function downloadPDF(invoiceId) {
         <p>Current Account No: 051463700000043</p>
       </div>
       <div style="width: 39.5%;">
-        <table style="width: 100%;">
+        <table style="width: 104.5%; height: 100%; margin: -0.15cm; padding: 0;">
           <tr><td>Total Amount Before Tax</td><td>${invoice.value}</td></tr>
           <tr><td>Add: SGST @ 9%</td><td>${invoice.sgst}</td></tr>
           <tr><td>Add: CGST @ 9%</td><td>${invoice.cgst}</td></tr>
@@ -419,7 +443,7 @@ async function downloadPDF(invoiceId) {
     <div>
       <table style="width: 100%; border: 1px solid #000; border-collapse: collapse; font-size: 10px; margin-top: 15px;">
   <tr>
-    <td colspan="2" id="amountWordsCell" style="padding: 6px;">
+    <td style="padding: 6px;">
       <strong>Total Invoice Value (In Words):</strong> ${invoice.amountWords}
     </td>
   </tr>
@@ -428,25 +452,25 @@ async function downloadPDF(invoiceId) {
       <table style="width: 100%; font-size: 10px; border: 1px solid #000; border-collapse: collapse; margin-top: 15px;">
   <tr>
     <td style="width: 65%; vertical-align: top; padding: 8px; border-right: 1px solid #000;">
-      <p><strong>Terms & Conditions:</strong></p>
+      <p><strong>Terms & Conditions:</strong></p><br>
       <ul style="margin: 0; padding-left: 15px;">
-        <li>CHEQUE/NEFT/RTGS should be in favour of TRIPZETTA</li>
-        <li>Any refunds or claims are subject to the cancellation policy of the booking.</li>
-        <li>All disputes are subject to jurisdiction of Delhi courts.</li>
-        <li>Interest @ 14% p.a. will be charged on overdue bills.</li>
+        <li>• CHEQUE/NEFT/RTGS should be in favour of TRIPZETTA</li>
+        <li>• Any refunds or claims are subject to the cancellation policy of the booking.</li>
+        <li>• All disputes are subject to jurisdiction of Delhi courts.</li>
+        <li>• Interest @ 14% p.a. will be charged on overdue bills.</li>
       </ul>
     </td>
     <td style="width: 20%; vertical-align: top; text-align: center; padding: 8px;">
       <p><strong>For TRIPZETTA</strong></p>
-      <img src="sign.png" class="logo" alt="Tripzetta Signature" onerror="this.src='fallback-sign.png'" style="height: 40px; margin: 5px 0;">
+      <img src="sign.png" class="logo" alt="Tripzetta Signature" onerror="this.src='fallback-sign.png'" style="height: 70px; margin: 5px 0;">
       <p>Authorised Signatory</p>
     </td>
   </tr>
 </table>
   
-  </div>
+  </div>;
+  `
 
-`
   document.body.appendChild(tempDiv);
 
   try {
@@ -589,7 +613,7 @@ async function viewPDF(invoiceId) {
 <div class="pdftesting">
     <div class="invoice-page" id="invoiceContent">
     <div class="header">
-      <div class="header-left"><br>
+      <div class="header-left"><br><br><br>
         <p class="title">INVOICE</p>
         <div class="section"><br>
           <p><span class="bold">Invoice Date:</span> ${invoice.date}</p>
@@ -605,7 +629,7 @@ async function viewPDF(invoiceId) {
       </div>
       <div class="header-right">
         <img src="image.png" class="logo" alt="Tripzetta Logo" onerror="this.src='fallback-logo.png'">
-        <div><br>
+        <div><br><br><br>
           <p><strong>GSTIN:</strong> 07APDPA8620A1ZL</p>
           <p><strong>PAN:</strong> APDPA8620A</p><br>
           <p><strong>Regd. Address:</strong> 408 4th Floor Devika Tower, Nehru Place, New Delhi</p>
@@ -664,7 +688,7 @@ async function viewPDF(invoiceId) {
         <p>Current Account No: 051463700000043</p>
       </div>
       <div style="width: 39.5%;">
-        <table style="width: 100%;">
+        <table style="width: 104.5%; height: 100%; margin: -0.15cm; padding: 0;">
           <tr><td>Total Amount Before Tax</td><td>${invoice.value}</td></tr>
           <tr><td>Add: SGST @ 9%</td><td>${invoice.sgst}</td></tr>
           <tr><td>Add: CGST @ 9%</td><td>${invoice.cgst}</td></tr>
@@ -692,17 +716,17 @@ async function viewPDF(invoiceId) {
       <table style="width: 100%; font-size: 10px; border: 1px solid #000; border-collapse: collapse; margin-top: 15px;">
   <tr>
     <td style="width: 65%; vertical-align: top; padding: 8px; border-right: 1px solid #000;">
-      <p><strong>Terms & Conditions:</strong></p>
+      <p><strong>Terms & Conditions:</strong></p><br>
       <ul style="margin: 0; padding-left: 15px;">
-        <li>CHEQUE/NEFT/RTGS should be in favour of TRIPZETTA</li>
-        <li>Any refunds or claims are subject to the cancellation policy of the booking.</li>
-        <li>All disputes are subject to jurisdiction of Delhi courts.</li>
-        <li>Interest @ 14% p.a. will be charged on overdue bills.</li>
+        <li>• CHEQUE/NEFT/RTGS should be in favour of TRIPZETTA</li>
+        <li>• Any refunds or claims are subject to the cancellation policy of the booking.</li>
+        <li>• All disputes are subject to jurisdiction of Delhi courts.</li>
+        <li>• Interest @ 14% p.a. will be charged on overdue bills.</li>
       </ul>
     </td>
     <td style="width: 20%; vertical-align: top; text-align: center; padding: 8px;">
       <p><strong>For TRIPZETTA</strong></p>
-      <img src="sign.png" class="logo" alt="Tripzetta Signature" onerror="this.src='fallback-sign.png'" style="height: 40px; margin: 5px 0;">
+      <img src="sign.png" class="logo" alt="Tripzetta Signature" onerror="this.src='fallback-sign.png'" style="height: 70px; margin: 5px 0;">
       <p>Authorised Signatory</p>
     </td>
   </tr>
@@ -771,30 +795,61 @@ function clearDateFilter() {
     <iframe id="pdfViewer" class="flex-grow w-full border-0" style="height: calc(100% - 64px);" frameborder="0"></iframe>
   </div>
 </div>
-<script>
-  function numberToWords(num) {
-  const a = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
-  if ((num = num.toString()).length > 9) return 'Overflow';
-  const n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-  if (!n) return;
+  <script>
+    // Sample invoice object
+    const invoice = {
+      value: "5000",
+      sgst: "450",
+      cgst: "450",
+      igst: "0"
+    };
 
-  let str = '';
-  str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' Crore ' : '';
-  str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' Lakh ' : '';
-  str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' Thousand ' : '';
-  str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' Hundred ' : '';
-  str += (n[5] != 0) ? ((str != '') ? 'and ' : '') +
-    (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + ' ' : '';
-  return str.trim() + ' Rupees Only';
-}
+    // Calculate total amount
+    const totalAmount = (
+      (parseFloat(invoice.value) || 0) +
+      (parseFloat(invoice.sgst) || 0) +
+      (parseFloat(invoice.cgst) || 0) +
+      (parseFloat(invoice.igst) || 0)
+    ).toFixed(2);
 
-// Usage
-const total = value + sgst + cgst + igst;
-const words = numberToWords(Math.round(total));
+    const totalAmountNumber = parseFloat(totalAmount);
 
+    // Number to Words Converter (Indian Style)
+    function numberToWords(num) {
+      const a = [
+        '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+        'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+        'Seventeen', 'Eighteen', 'Nineteen'
+      ];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-</script>
+      function inWords(n) {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+        if (n < 1000) return a[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " and " + inWords(n % 100) : "");
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + inWords(n % 1000) : "");
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + " Lakh" + (n % 100000 ? " " + inWords(n % 100000) : "");
+        return inWords(Math.floor(n / 10000000)) + " Crore" + (n % 10000000 ? " " + inWords(n % 10000000) : "");
+      }
+
+      const integerPart = Math.floor(num);
+      const decimalPart = Math.round((num - integerPart) * 100);
+
+      let result = inWords(integerPart) + " Rupees";
+      if (decimalPart > 0) {
+        result += " and " + inWords(decimalPart) + " Paise";
+      }
+
+      return result + " Only";
+    }
+
+    // Convert to words
+    const amountInWords = numberToWords(totalAmountNumber);
+
+    // Display in HTML
+    document.getElementById("amountInWordsSpan").innerText = amountInWords;
+  </script>
+
 </body>
 </html>

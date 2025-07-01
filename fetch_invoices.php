@@ -2,12 +2,12 @@
 header('Content-Type: application/json');
 
 // Step 1: Connect to MySQL
-$host = 'localhost';
-$username = 'root';
-$password = ''; // Change this if you have a password
-$database = 'invoice_db';
+// $host = 'localhost';
+// $username = 'root';
+// $password = ''; // Change this if you have a password
+// $database = 'invoice_db';
 
-$conn = new mysqli($host, $username, $password, $database);
+$conn = new mysqli("localhost", "root", "", "invoice_db");
 
 // Step 2: Check connection
 if ($conn->connect_error) {

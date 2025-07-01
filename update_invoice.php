@@ -1,47 +1,61 @@
 <?php
 header('Content-Type: application/json');
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "invoice_db";
+// Database config
+// $host = 'localhost';
+// $user = 'root';
+// $password = ''; // Update if needed
+// $dbname = 'invoice_db'; // Update this to your DB name
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = new mysqli("localhost", "root", "", "invoice_db");
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed."]));
+    echo json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
+    exit;
 }
 
-// Get data from JS
-$data = json_decode(file_get_contents("php://input"), true);
-if (!$data) {
-    die(json_encode(["error" => "No data received."]));
+// Sanitize inputs
+function clean($data, $conn) {
+    return mysqli_real_escape_string($conn, trim($data));
 }
 
-// Prepare and update
-$stmt = $conn->prepare("UPDATE invoices SET date=?, place=?, customer=?, address=?, gstin=?, state=?, service=?, sac=?, taxType=?, value=?, sgst=?, cgst=?, igst=?, status=? WHERE invoiceNo=?");
-$stmt->bind_param(
-    "sssssssssssssss",
-    $data['date'],
-    $data['place'],
-    $data['customer'],
-    $data['address'],
-    $data['gstin'],
-    $data['state'],
-    $data['description'],
-    $data['sac'],
-    $data['taxType'],
-    $data['value'],
-    $data['sgst'],
-    $data['cgst'],
-    $data['igst'],
-    $data['status'],
-    $data['invoiceNo']
-);
+$invoiceNo = clean($_POST['invoiceNo'], $conn);
+$date = clean($_POST['date'], $conn);
+$place = clean($_POST['place'], $conn);
+$customer = clean($_POST['customer'], $conn);
+$address = clean($_POST['address'], $conn);
+$gstin = clean($_POST['gstin'], $conn);
+$state = clean($_POST['state'], $conn);
+$status = clean($_POST['status'], $conn);
+$service = clean($_POST['service'], $conn);
+$sac = clean($_POST['sac'], $conn);
+$taxType = clean($_POST['taxType'], $conn);
+$value = floatval($_POST['value']);
+$sgst = floatval($_POST['sgst']);
+$cgst = floatval($_POST['cgst']);
+$igst = floatval($_POST['igst']);
 
-if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
+// Update query
+$sql = "UPDATE invoices SET 
+  date='$date',
+  place='$place',
+  customer='$customer',
+  address='$address',
+  gstin='$gstin',
+  state='$state',
+  status='$status',
+  service='$service',
+  sac='$sac',
+  taxType='$taxType',
+  value=$value,
+  sgst=$sgst,
+  cgst=$cgst,
+  igst=$igst
+  WHERE invoiceNo='$invoiceNo'";
+
+if ($conn->query($sql) === TRUE) {
+    echo json_encode(['success' => true]);
 } else {
-    echo json_encode(["error" => "Update failed."]);
+    echo json_encode(['error' => 'Update failed: ' . $conn->error]);
 }
 
 $conn->close();
