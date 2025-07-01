@@ -30,10 +30,9 @@
         Login
       </button>
     </div>
-
-    <p class="text-right text-sm text-blue-600 hover:underline mt-2">
-      <a href="forgot_password.html">Forgot password?</a>
-    </p>
+<p class="text-right text-sm text-blue-600 hover:underline mt-2">
+  <a href="forgot_password.html">Forgot password?</a>
+</p>
 
     <p id="errorMsg" class="text-red-500 mt-4 text-center hidden">Invalid credentials</p>
   </div>
@@ -43,10 +42,10 @@
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    fetch('https://www.tripzetta.com/login.php', {
+    fetch('login.php', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      body: email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}
     })
     .then(response => response.json())
     .then(data => {
@@ -61,7 +60,7 @@
       console.error('Error:', error);
     });
   }
-  </script>
+</script>
 
 </body>
 </html>
